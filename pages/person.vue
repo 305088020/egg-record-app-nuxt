@@ -1,9 +1,9 @@
 <template>
   <section>
     <button
-      class="button field is-danger"
       :disabled="!selected"
       @click="selected = null"
+      class="button field is-danger"
     >
       <b-icon icon="close" />
       <span>Clear selected</span>

@@ -3,25 +3,34 @@
     <Layout style="height: 100%" class="main">
       <Sider
         ref="side1"
+        v-model="isCollapsed"
+        :collapsed-width="78"
         hide-trigger
         collapsible
-        :collapsed-width="78"
-        v-model="isCollapsed"
       >
-        <side-menu accordion ref="sideMenu" :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
-        <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
-        <div class="logo-con">
-          <img v-show="!collapsed" :src="maxLogo" key="max-logo" />
-          <img v-show="collapsed" :src="minLogo" key="min-logo" />
-        </div>
-      </side-menu>
+        <side-menu
+          ref="sideMenu"
+          :active-name="$route.name"
+          :collapsed="collapsed"
+          @on-select="turnToPage"
+          :menu-list="menuList"
+          accordion
+        >
+          <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
+          <div class="logo-con">
+            <img key="max-logo" v-show="!collapsed" :src="maxLogo" />
+            <img key="min-logo" v-show="collapsed" :src="minLogo" />
+          </div>
+        </side-menu>
         <Icon type="logo-apple" />
-        <Button type="primary" long>Primary</Button>
+        <Button type="primary" long>
+          Primary
+        </Button>
         <Menu
+          :class="menuitemClasses"
           active-name="1-2"
           theme="dark"
           width="auto"
-          :class="menuitemClasses"
         >
           <MenuItem
             v-for="(item, key) of items"
@@ -29,7 +38,7 @@
             :key="key"
             :name="key"
           >
-            <Icon :type="item.icon"></Icon>
+            <Icon :type="item.icon" />
             <span>{{ item.title }}</span>
           </MenuItem>
         </Menu>
@@ -42,7 +51,7 @@
             :style="{ margin: '0 20px' }"
             type="md-menu"
             size="24"
-          ></Icon>
+          />
         </Header>
         <Content
           :style="{ margin: '20px', background: '#fff', minHeight: '260px' }"
@@ -107,6 +116,7 @@
 </style>
 <script>
 export default {
+  components: {},
   data() {
     return {
       items: [

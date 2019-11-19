@@ -5,8 +5,8 @@
         <div class="level-right">
           <!-- <b-button @click="isImageModalActive = true" type="is-primary">新 增</b-button> -->
           <button
-            class="button is-primary is-medium"
             @click="isComponentModalActive = true"
+            class="button is-primary is-medium"
           >
             Launch component modal
           </button>
@@ -18,7 +18,7 @@
             aria-role="dialog"
             aria-modal
           >
-            <modal-form v-bind="formProps"></modal-form>
+            <modal-form v-bind="formProps" />
           </b-modal>
         </div>
         <b-table
@@ -68,29 +68,30 @@ export default {
         customClass: 'custom-class custom-class-2'
       })
       // this.$buefy.notification.open('Clicked!!')
-    }
-  },
-  async asyncData({ $axios }) {
-    const bank = await $axios.$get('http://localhost:7001/bank')
-    return {
-      bank,
-      selected: bank[1],
-      columns: [
-        {
-          field: 'id',
-          label: 'ID',
-          width: '40',
-          numeric: true
-        },
-        {
-          field: 'name',
-          label: 'Name'
-        },
-        {
-          field: 'created_at',
-          label: '创建时间'
-        }
-      ]
+    },
+
+    async asyncData({ $axios }) {
+      const bank = await $axios.$get('http://localhost:7001/bank')
+      return {
+        bank,
+        selected: bank[1],
+        columns: [
+          {
+            field: 'id',
+            label: 'ID',
+            width: '40',
+            numeric: true
+          },
+          {
+            field: 'name',
+            label: 'Name'
+          },
+          {
+            field: 'created_at',
+            label: '创建时间'
+          }
+        ]
+      }
     }
   }
 }

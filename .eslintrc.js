@@ -8,19 +8,15 @@ module.exports = {
     parser: 'babel-eslint'
   },
   extends: [
-    'prettier',
-    'prettier/vue',
-    'plugin:prettier/recommended',
     '@nuxtjs',
-    'plugin:nuxt/recommended'
+    'plugin:nuxt/recommended',
+    'plugin:prettier/recommended',
+    'prettier',
+    'prettier/vue'
   ],
   plugins: ['prettier'],
   // add your custom rules here
   rules: {
-    //强制使用单引号
-    quotes: ['error', 'single'],
-    //强制不使用分号结尾
-    semi: ['error', 'never'],
-    'prettier/prettier': 'error'
+    'arrow-parens': 'off'
   }
 }

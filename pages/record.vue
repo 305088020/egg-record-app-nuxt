@@ -1,9 +1,9 @@
 <template>
   <section>
     <button
-      class="button field is-danger"
       :disabled="!selected"
       @click="selected = null"
+      class="button field is-danger"
     >
       <b-icon icon="close" />
       <span>Clear selected</span>
@@ -30,7 +30,7 @@
 export default {
   async asyncData({ $axios }) {
     const records = await $axios.$get('http://localhost:7001/record')
-    records.map((element) => {
+    records.map(element => {
       element.cardlist =
         element.card.code +
         '-' +
