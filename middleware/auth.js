@@ -10,14 +10,14 @@ export default async function({ store, route, redirect, error }) {
 
   // 如果缺少token，则
   if (!token) {
-    // return redirect('/login')
+    return redirect('/login')
   }
 
   // 获取不到正确的user信息，则退出登录
   const res = await store.dispatch('user/getUserInfo')
   if (!res) {
     await store.dispatch('user/handleLogOut')
-    // return redirect('/login')
+    return redirect('/login')
   }
 
   const role = res.role

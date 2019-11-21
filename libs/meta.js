@@ -16,7 +16,7 @@ if (meta['/']) {
  * 设置home页面默认定义
  */
 meta[config.homePath] = {
-  hideInMenu: true,
+  hideInMenu: false,
   icon: 'md-home',
   title: '首页'
 }

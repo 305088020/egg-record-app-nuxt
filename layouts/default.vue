@@ -88,6 +88,7 @@ export default {
     menuList() {
       return this.$store.getters['app/menuList']
     },
+    // 当更改collapsed值后，store中值更改后，触发计算属性
     collapsed() {
       return this.$store.state.app.collapsed
     },
@@ -159,6 +160,7 @@ export default {
         this.$router.push({ path: path })
       }
     },
+    // 设备 store/app.js  中的收缩值，保存 localStorage中
     handleCollapsedChange(state) {
       this.setCollapsed(state)
     },
