@@ -1,22 +1,13 @@
 <template>
   <section>
-    <button
-      :disabled="!selected"
-      @click="selected = null"
-      class="button field is-danger"
-    >
+    <button :disabled="!selected" class="button field is-danger" @click="selected = null">
       <b-icon icon="close" />
       <span>Clear selected</span>
     </button>
 
     <b-tabs>
       <b-tab-item label="Table">
-        <b-table
-          :data="records"
-          :columns="columns"
-          :selected.sync="selected"
-          focusable
-        />
+        <b-table :data="records" :columns="columns" :selected.sync="selected" focusable />
       </b-tab-item>
 
       <b-tab-item label="Selected">
@@ -31,12 +22,7 @@ export default {
   async asyncData({ $axios }) {
     const records = await $axios.$get('http://localhost:7001/record')
     records.map(element => {
-      element.cardlist =
-        element.card.code +
-        '-' +
-        element.card.person.name +
-        '-' +
-        element.card.bank.name
+      element.cardlist = element.card.code + '-' + element.card.person.name + '-' + element.card.bank.name
     })
     return {
       records,

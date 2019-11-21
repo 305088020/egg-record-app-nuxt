@@ -27,7 +27,8 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/iview'],
+  plugins: ['@/plugins/iview', '@/plugins/sysconfig'],
+  // plugins: [{ src: '@/plugins/iview', ssr: true }, '@/plugins/sysconfig'],
   /*
    ** Nuxt.js modules
    */
@@ -48,6 +49,14 @@ export default {
     /*
      ** You can extend webpack config here
      */
+    loaders: {
+      less: {
+        javascriptEnabled: true
+      }
+    },
     extend(config, ctx) {}
+  },
+  router: {
+    middleware: ['meta', 'auth']
   }
 }

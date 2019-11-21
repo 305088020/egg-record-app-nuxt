@@ -1,22 +1,13 @@
 <template>
   <section>
-    <button
-      :disabled="!selected"
-      @click="selected = null"
-      class="button field is-danger"
-    >
+    <button :disabled="!selected" class="button field is-danger" @click="selected = null">
       <b-icon icon="close" />
       <span>Clear selected</span>
     </button>
 
     <b-tabs>
       <b-tab-item label="Table">
-        <b-table
-          :data="person"
-          :columns="columns"
-          :selected.sync="selected"
-          focusable
-        />
+        <b-table :data="person" :columns="columns" :selected.sync="selected" focusable />
       </b-tab-item>
 
       <b-tab-item label="Selected">
