@@ -14,8 +14,8 @@ export default {
       required: true,
       default: 'md-bookmark'
     },
-    color: { type: String, default: '#fff' },
-    size: { type: Number, default: 18 }
+    color: { type: String, default: '' },
+    size: { type: Number, default: 14 }
   },
   computed: {
     iconType() {

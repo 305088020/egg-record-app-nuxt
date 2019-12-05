@@ -1,3 +1,4 @@
+import { Message } from 'view-design'
 import config from '../config'
 import HttpRequest from './axios'
 
@@ -12,7 +13,25 @@ const request = options => {
       return data
     })
     .catch(e => {
-      throw new Error(e)
+      const status = e.response.status
+      const message = e.response.data.message || ''
+      switch (status) {
+        case 400:
+          Message.error(message || '请求无效')
+          break
+        case 401:
+          Message.error(message || '未授权：登录失败')
+          break
+        case 403:
+          Message.error(message || '禁止访问')
+          break
+        case 404:
+          Message.error(message || '请求路径不对')
+          break
+        case 500:
+          Message.error(message || '服务器错误！')
+          break
+      }
     })
 }
 

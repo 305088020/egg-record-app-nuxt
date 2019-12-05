@@ -189,15 +189,23 @@ export const getBreadCrumbList = route => {
         path: path,
         name: rawName
       }
+
       if (meta[path]) {
-        return { ...item, ...meta[path] }
+        if (!meta[path].hideInBread) {
+          return { ...item, ...meta[path] }
+        }
       } else {
         return item
       }
     }
   })
 
-  return [homeRoute, ...processedRoutes]
+  return [
+    homeRoute,
+    ...processedRoutes.filter(item => {
+      return item !== undefined
+    })
+  ]
 }
 
 /**

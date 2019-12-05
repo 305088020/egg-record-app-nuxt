@@ -12,7 +12,7 @@
 </template>
 
 <style lang="less">
-@import '../assets/login.less';
+@import '~assets/login.less';
 </style>
 
 <script>

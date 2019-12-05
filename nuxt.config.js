@@ -23,11 +23,11 @@ export default {
   /*
    ** Global CSS
    */
-  css: ['iview/dist/styles/iview.css'],
+  css: ['view-design/dist/styles/iview.css'],
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/iview', '@/plugins/sysconfig'],
+  plugins: ['@/plugins/iview', '@/plugins/sysconfig', '@/plugins/filters.js'],
   // plugins: [{ src: '@/plugins/iview', ssr: true }, '@/plugins/sysconfig'],
   /*
    ** Nuxt.js modules

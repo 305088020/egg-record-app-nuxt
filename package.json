@@ -12,31 +12,41 @@
     "start": "nuxt start",
     "generate": "nuxt generate"
   },
+  "config": {
+    "nuxt": {
+      "host": "0.0.0.0",
+      "port": "3000"
+    }
+  },
   "dependencies": {
-    "iview": "^3.1.5",
     "@nuxtjs/axios": "^5.3.6",
     "cross-env": "^5.2.0",
+    "date-fns": "^2.8.1",
+    "iview": "^3.1.5",
     "js-cookie": "^2.2.0",
-    "nuxt": "^2.0.0"
+    "moment": "^2.24.0",
+    "nuxt": "^2.0.0",
+    "silly-datetime": "^0.1.2",
+    "view-design": "^4.0.2"
   },
   "devDependencies": {
-    "less": "^3.9.0",
-    "less-loader": "^4.1.0",
     "@nuxtjs/eslint-config": "^0.0.1",
     "@nuxtjs/eslint-module": "^0.0.1",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.15.1",
+    "eslint-config-prettier": "^4.1.0",
     "eslint-config-standard": ">=12.0.0",
     "eslint-plugin-import": ">=2.16.0",
     "eslint-plugin-jest": ">=22.3.0",
     "eslint-plugin-node": ">=8.0.1",
     "eslint-plugin-nuxt": ">=0.4.2",
+    "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-promise": ">=4.0.1",
     "eslint-plugin-standard": ">=4.0.0",
     "eslint-plugin-vue": "^6.0.1",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "prettier": "^1.16.4",
-    "nodemon": "^1.18.9"
+    "less": "^3.9.0",
+    "less-loader": "^4.1.0",
+    "nodemon": "^1.18.9",
+    "prettier": "^1.16.4"
   }
 }

@@ -14,7 +14,7 @@ export const login = ({ username, password }) => {
 
 export const getUserInfo = token => {
   return request({
-    url: 'get_info',
+    url: 'getInfo',
     data: {
       token
     },

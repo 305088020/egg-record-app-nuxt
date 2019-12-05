@@ -6,7 +6,8 @@ export default {
    *              用来在菜单中显示文字
    */
   baseUrl: {
-    dev: 'http://localhost:7300/mock/5dd4ec305da8a70020b93224/',
+    // dev: 'http://localhost:7300/mock/5dd6984f5da8a70020b9322a/creditCard/',
+    dev: 'http://localhost:7001/',
     pro: 'https://produce.com'
   },
   /**
