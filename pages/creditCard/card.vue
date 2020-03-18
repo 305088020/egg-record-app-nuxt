@@ -98,11 +98,21 @@
           <template slot-scope="{ row }" slot="person">
             {{ ((row.person && row.person.name) || '') + '-' + ((row.bank && row.bank.name) || '') + '-' + row.code }}
           </template>
+          <template slot-scope="{ row }" slot="quota">
+            {{ row.quota | currency }}
+          </template>
+          <template slot-scope="{ row }" slot="amount">
+            {{ row.amount | currency }}
+          </template>
           <template slot-scope="{ row }" slot="bill">
-            {{ (row.bills && row.bills[0] && row.bills[0].amount - row.bills[0].incomeAmount) || '' }}
+            <div v-bind:style="closeLastDate((row.bill && row.bill.repayDate) || '')">
+              {{ ((row.bill && row.bill.amount) || '') | currency }}
+            </div>
           </template>
           <template slot-scope="{ row }" slot="lastDay">
-            {{ ((row.bills && row.bills[0] && row.bills[0].repayDate) || '') | dateformat('YYYY-MM-DD') }}
+            <div v-bind:style="closeLastDate((row.bill && row.bill.repayDate) || '')">
+              {{ (row.bill && row.bill.repayDate) || '' | dateformat('YYYY-MM-DD') }}
+            </div>
           </template>
           <template slot-scope="{ row }" slot="action">
             <Button type="warning" size="small" style="margin-right: 5px" @click="pay(row.id)">刷 卡</Button>
@@ -141,11 +151,11 @@ export default {
         },
         {
           title: '额定额度',
-          key: 'quota'
+          slot: 'quota'
         },
         {
           title: '可用额度',
-          key: 'amount'
+          slot: 'amount'
         },
         {
           title: '账单',
@@ -223,26 +233,8 @@ export default {
     // 银行
     const banks = await bankIndex()
 
-    let cards = await index()
-    // 处理cards
-    cards = cards.map(card => {
-      const bills = card.bills
-      let code = dateFns.format(new Date(), 'yyyy-MM')
-      const year = new Date().getFullYear()
-      const month = new Date().getMonth()
-      const day = new Date().getDate()
+    const cards = await index()
 
-      if (parseInt(day) < parseInt(card.billing_day)) {
-        // 上个月账单
-        code = dateFns.format(new Date(year, month - 1, card.billing_day), 'yyyy-MM')
-      }
-      if (bills && bills.length > 0) {
-        card.bills = card.bills.filter(bill => {
-          return bill.code.indexOf(code) >= 0
-        })
-      }
-      return card
-    })
     return { persons, banks, cards }
   },
   methods: {
@@ -390,30 +382,16 @@ export default {
       // 通过正则过滤小数点后两位
       e.target.value = e.target.value.match(/^\d*(\.?\d{0,2})/g)[0] || null
     },
-    getBill(card) {
-      // 取当前日期，查看账单
-      const bills = card.bills
-      let code = dateFns.format(new Date(), 'yyyy-MM')
-      const year = new Date().getFullYear()
-      const month = new Date().getMonth()
-      const day = new Date().getDate()
-
-      if (parseInt(day) < parseInt(card.billing_day)) {
-        // 上个月账单
-        code = dateFns.format(new Date(year, month - 1, card.billing_day), 'yyyy-MM')
+    closeLastDate(date) {
+      if (date === '') return ''
+      const days = dateFns.differenceInDays(new Date(date), new Date())
+      if (parseInt(days) >= 0 && parseInt(days) <= 3) {
+        return {
+          color: 'red',
+          fontSize: '15px',
+          'font-weight': 'bold'
+        }
       }
-      // let result = 0
-      if (bills && bills.length > 0) {
-        card.bills = card.bills.filter(bill => {
-          return bill.code.indexOf(code) >= 0
-        })
-        // bills.forEach(bill => {
-        //   if (bill.code.indexOf(code) >= 0) {
-        //     result = bill.amount - bill.incomeAmount
-        //   }
-        // })
-      }
-      // return '$' + result
     }
   },
   filters: {}

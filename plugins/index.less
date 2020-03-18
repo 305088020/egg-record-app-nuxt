@@ -1,4 +1,4 @@
-@import '~iview/src/styles/index.less';
+@import '~view-design/src/styles/index.less';
 
 @menu-dark-title: #001529;
 @menu-dark-active-bg: #000c17;
@@ -8,4 +8,19 @@
 .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover {
   color: rgb(64, 158, 255) !important;
   background: #000c17 !important;
+}
+
+@table-td-hover-bg: #0e0f0ed0;
+@table-td-highlight-bg: #ff9900e0;
+
+.ivu-table-row-hover {
+  color: rgb(255, 255, 255);
+  font-size: medium;
+  box-shadow: 19px -1px 17px 0px #f50303;
+}
+.ivu-table-row-highlight td {
+  box-shadow: 19px -1px 17px 0px #8d8b8b;
+}
+.ivu-table-row-hover td {
+  box-shadow: 5px -1px 15px 1px #8d8b8b;
 }

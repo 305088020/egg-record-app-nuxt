@@ -13,6 +13,18 @@
           <template slot-scope="{ row }" slot="card">
             {{ row.card.person.name + '-' + row.card.bank.name + '-' + row.card.code }}
           </template>
+          <template slot-scope="{ row }" slot="startDate">
+            {{ row.startDate | dateformat('YYYY-MM-DD') }}
+          </template>
+          <template slot-scope="{ row }" slot="endDate">
+            {{ row.endDate | dateformat('YYYY-MM-DD') }}
+          </template>
+          <template slot-scope="{ row }" slot="billDate">
+            {{ row.billDate | dateformat('YYYY-MM-DD') }}
+          </template>
+          <template slot-scope="{ row }" slot="repayDate">
+            {{ row.repayDate | dateformat('YYYY-MM-DD') }}
+          </template>
         </Table>
       </div>
     </Card>
@@ -36,19 +48,19 @@ export default {
         },
         {
           title: '开始日期',
-          key: 'startDate'
+          slot: 'startDate'
         },
         {
           title: '结束日期',
-          key: 'endDate'
+          slot: 'endDate'
         },
         {
           title: '账单日期',
-          key: 'billDate'
+          slot: 'billDate'
         },
         {
           title: '还款日期',
-          key: 'repayDate'
+          slot: 'repayDate'
         },
         {
           title: '金额',
