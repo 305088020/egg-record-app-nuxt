@@ -50,7 +50,7 @@ export default {
 
     async handleSubmit({ username, password }) {
       await this.handleLogin({ username, password })
-      await this.getUserInfo()
+      // await this.getUserInfo()
       this.$router.push({
         path: this.$config.homePath
       })

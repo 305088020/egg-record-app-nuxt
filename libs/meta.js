@@ -17,9 +17,28 @@ if (meta['/']) {
  */
 meta[config.homePath] = {
   hideInMenu: false,
+  index: 1,
   icon: 'md-home',
   title: '首页'
 }
+
+// /**
+//  * 设置home页面默认定义
+//  */
+// meta['/customer'] = {
+//   hideInMenu: false,
+//   icon: 'ios-list',
+//   title: '客户信息'
+// }
+
+// /**
+//  * 设置home页面默认定义
+//  */
+// meta['/users'] = {
+//   hideInMenu: false,
+//   icon: 'ios-people',
+//   title: '用户'
+// }
 
 /**
  * 设置login页面默认定义

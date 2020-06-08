@@ -20,7 +20,10 @@ export default async function({ store, route, redirect, error }) {
     return redirect('/login')
   }
 
-  const role = res.role
+  let role = 'normal'
+  if (res.admin) {
+    role = 'admin'
+  }
 
   let canAccess = true
   getChildRoutesFromPath(path).forEach(child => {

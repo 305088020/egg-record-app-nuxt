@@ -1,38 +1,42 @@
 <template>
-  <div class="container">
-    <div>
-      <logo />
-      <h1 class="title">
-        creditCard-front
-      </h1>
-      <h2 class="subtitle">
-        Welcome to the iView + Nuxt.js template
-      </h2>
-      <div class="links">
-        <Button type="primary" target="_blank" to="https://nuxtjs.org/">
-          Documentation
-        </Button>
-        <Button target="_blank" to="https://github.com/nuxt/nuxt.js">
-          GitHub
-        </Button>
-        <Button target="_blank" to="https://www.iviewui.com/">
-          iView
-        </Button>
-      </div>
-    </div>
-  </div>
+  <card>
+    <Carousel autoplay v-model="value2" loop>
+      <CarouselItem>
+        <img height="600" src="~assets/images/home1.png" />
+      </CarouselItem>
+      <CarouselItem>
+        <img height="600" src="~assets/images/home2.png" />
+      </CarouselItem>
+      <CarouselItem>
+        <img height="600" src="~assets/images/home3.png" />
+      </CarouselItem>
+      <CarouselItem>
+        <img height="600" src="~assets/images/home4.png" />
+      </CarouselItem>
+    </Carousel>
+  </card>
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
 export default {
-  components: {
-    Logo
+  components: {},
+  data() {
+    return {
+      value2: 0
+    }
   }
 }
 </script>
 
 <style>
+.demo-carousel {
+  height: 500px;
+  line-height: 200px;
+  text-align: center;
+  color: #fff;
+  font-size: 20px;
+  background: #506b9e;
+}
 .container {
   margin: 0 auto;
   min-height: 100vh;

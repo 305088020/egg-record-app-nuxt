@@ -7,8 +7,8 @@ export default {
    */
   baseUrl: {
     // dev: 'http://localhost:7300/mock/5dd6984f5da8a70020b9322a/creditCard/',
-    dev: 'http://localhost:7001/',
-    pro: 'https://produce.com'
+    dev: 'http://' + window.location.hostname + ':7001/',
+    pro: 'http://114.215.82.206:7001/'
   },
   /**
    * @description 默认打开的首页的路由name值，默认为home

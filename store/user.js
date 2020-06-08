@@ -1,4 +1,4 @@
-import { getUserInfo, login, logout } from '../api/user'
+import { getUserInfo, login } from '../api/user'
 import { setToken, getToken } from '../libs/utils'
 
 export const state = () => ({
@@ -48,23 +48,34 @@ export const getters = {
 export const actions = {
   async handleLogin({ commit }, { username, password }) {
     username = username.trim()
-    const { data } = await login({
+    const data = await login({
       username,
       password
     })
-    commit('setToken', data.token)
+    if (data && data.token) {
+      commit('setToken', data.token)
+    }
   },
-  async handleLogOut({ state, commit }) {
-    await logout(state.token)
+  handleLogOut({ state, commit }) {
+    // await logout(state.token)
     commit('setToken', '')
     commit('clearAll')
   },
   async getUserInfo({ commit }) {
-    const { data } = await getUserInfo(state.token)
-    commit('setAvatar', data.avatar)
+    const data = await getUserInfo(state.token)
+    if (typeof data === 'undefined') {
+      return null
+    }
+    // commit('setAvatar', data.avatar)
     commit('setUserName', data.username)
-    commit('setUserId', data.userId)
-    commit('setRole', data.role)
+    commit('setUserId', data.id)
+    let role = ''
+    if (data.admin) {
+      role = 'admin'
+    } else {
+      role = 'normal'
+    }
+    commit('setRole', role)
     commit('setHasGetInfo', true)
     return data
   }

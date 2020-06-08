@@ -12,15 +12,18 @@
  *  }
  */
 export default {
-  '/creditCard': {
-    title: 'creditCard',
-    icon: 'ios-contact',
+  '/users': {
+    icon: 'ios-person-add-outline',
+    index: 2,
+    title: '用户',
     hideInBread: false,
-    hideInMenu: false
+    hideInMenu: false,
+    access: ['admin']
   },
-  '/bank': {
-    title: '银 行',
-    icon: 'ios-contact',
+  '/customer': {
+    icon: 'ios-people-outline',
+    index: 3,
+    title: '客户信息',
     hideInBread: false,
     hideInMenu: false,
     meta: {
