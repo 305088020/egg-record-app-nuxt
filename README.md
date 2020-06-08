@@ -1,4 +1,4 @@
-# creditCard-front
+# app-nuxt-client
 
 > My epic Nuxt.js project
 
@@ -11,11 +11,11 @@ $ yarn install
 # serve with hot reload at localhost:3000
 $ yarn dev
 
-# build for production and launch server
+# 启动生产模式
 $ yarn build
 $ yarn start
 
-# generate static project
+# 打包静态文件
 $ yarn generate
 ```
 
