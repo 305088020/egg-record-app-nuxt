@@ -282,3 +282,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+table tbody tr td {
+  text-align: center;
+}
+</style>

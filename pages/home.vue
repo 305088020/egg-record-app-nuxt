@@ -1,20 +1,5 @@
 <template>
-  <card>
-    <Carousel autoplay v-model="value2" loop>
-      <CarouselItem>
-        <img height="600" src="~assets/images/home1.png" />
-      </CarouselItem>
-      <CarouselItem>
-        <img height="600" src="~assets/images/home2.png" />
-      </CarouselItem>
-      <CarouselItem>
-        <img height="600" src="~assets/images/home3.png" />
-      </CarouselItem>
-      <CarouselItem>
-        <img height="600" src="~assets/images/home4.png" />
-      </CarouselItem>
-    </Carousel>
-  </card>
+  <card> </card>
 </template>
 
 <script>
