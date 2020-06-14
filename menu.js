@@ -29,5 +29,12 @@ export default {
     meta: {
       beforeCloseName: 'before_close_normal'
     }
+  },
+  '/disease': {
+    icon: 'ios-people-outline',
+    index: 4,
+    title: '疾病类型',
+    hideInBread: false,
+    hideInMenu: false
   }
 }

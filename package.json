@@ -27,7 +27,8 @@
     "moment": "^2.24.0",
     "nuxt": "^2.0.0",
     "silly-datetime": "^0.1.2",
-    "view-design": "^4.0.2"
+    "view-design": "^4.0.2",
+    "vue-jsonp": "^0.1.8"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",

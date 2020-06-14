@@ -9,6 +9,9 @@
         <Button type="primary" icon="md-add">新增</Button>
       </a>
       <Table border stripe :columns="columns8" :data="cards.data" @on-sort-change="sortChange($event)">
+        <template slot-scope="{ row }" slot="customerName">
+          {{ row.user.name }}
+        </template>
         <template slot-scope="{ row }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row.id)">编辑</Button>
           <Button type="error" size="small" @click="remove(row.id)">删除</Button>
@@ -33,23 +36,36 @@
     </Modal>
     <Modal v-model="modal1" width="800" :title="title" :okText="okText" :mask-closable="false" @on-cancel="cancel">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
-        <FormItem label="姓名" prop="name">
-          <Input v-model="formValidate.name" placeholder="姓名"></Input>
+        <FormItem label="患者姓名" prop="name">
+          <Input v-model="formValidate.name" placeholder="患者姓名"></Input>
         </FormItem>
         <FormItem label="年龄" prop="age">
           <Input type="number" v-model="formValidate.age" placeholder="年龄"></Input>
         </FormItem>
         <FormItem label="地区" prop="address">
-          <Input v-model="formValidate.address" placeholder="地区"></Input>
+          <Select v-model="formValidate.province" style="width:200px" @on-change="provinceChange">
+            <Option v-for="item in provinces" :value="item.id" :key="item.fullname">{{ item.fullname }}</Option>
+          </Select>
+          <Select v-model="formValidate.city" style="width:200px" @on-change="cityChange">
+            <Option v-for="item in citys" :value="item.id" :key="item.fullname">{{ item.fullname }}</Option>
+          </Select>
+          <Select v-model="formValidate.community" clearable style="width:200px" v-if="hasCommunity">
+            <Option v-for="item in communitys" :value="item.id" :key="item.fullname">{{ item.fullname }}</Option>
+          </Select>
         </FormItem>
-        <FormItem label="微信" prop="wechat">
-          <Input v-model="formValidate.wechat" placeholder="微信"></Input>
+        <FormItem label="患者微信" prop="wechat">
+          <Input v-model="formValidate.wechat" placeholder="患者微信"></Input>
         </FormItem>
         <FormItem label="疾病" prop="disease">
-          <Input v-model="formValidate.disease" placeholder="疾病"></Input>
+          <!-- <Input v-model="formValidate.disease" placeholder="疾病"></Input> -->
+          <Select v-model="formValidate.disease" style="width:200px">
+            <Option v-for="item in diseaseList" :value="item.type" :key="item.type">{{ item.type }}</Option>
+          </Select>
         </FormItem>
-        <FormItem label="来源" prop="username">
-          <Input v-model="formValidate.username" placeholder="推广微信"></Input>
+        <FormItem label="客服微信" prop="customer_wechat">
+          <Select v-model="formValidate.customer_wechat" style="width:200px">
+            <Option v-for="item in wechatList" :value="item.wechat" :key="item.wechat">{{ item.wechat }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="时间" prop="date">
           <DatePicker type="datetime" v-model="formValidate.date" placeholder="Select date" style="width: 200px"></DatePicker>
@@ -68,6 +84,8 @@
 
 <script>
 import { index, create, update, show, destroy } from '@/api/customer'
+import { list } from '@/api/disease'
+import { index as wechatIndex } from '@/api/wechat'
 export default {
   async asyncData({ $axios, store }) {
     console.log(store.state.user.role)
@@ -76,7 +94,6 @@ export default {
       userId = store.state.user.userId
     }
     const cards = await index({ limit: 10, currentPage: 1, sort: 'id,desc', user_id: userId })
-
     return {
       cards,
       total: cards.count,
@@ -86,46 +103,50 @@ export default {
         //   key: 'id'
         // },
         {
-          title: '姓名',
+          title: '患者姓名',
           key: 'name',
           resizable: true,
-          width: 100,
-          sortable: 'custom'
+          width: 100
         },
         {
           title: '年龄',
           key: 'age',
           resizable: true,
-          width: 100,
-          sortable: 'custom'
+          width: 100
         },
-        {
-          title: '账户号',
-          key: 'username',
-          resizable: true,
-          width: 100,
-          sortable: 'custom'
-        },
+
         {
           title: '地区',
           key: 'address',
           resizable: true,
-          width: 100,
-          sortable: 'custom'
+          width: 100
         },
         {
           title: '疾病类型',
           key: 'disease',
           resizable: true,
           width: 120,
-          sortable: 'custom'
+          sortable: 'disease'
         },
         {
-          title: '微信号',
+          title: '患者微信',
           key: 'wechat',
           resizable: true,
+          width: 100
+        },
+        {
+          title: '客服微信',
+          key: 'customer_wechat',
+          resizable: true,
           width: 100,
-          sortable: 'custom'
+          sortable: 'customer_wechat'
+        },
+        {
+          title: '客服姓名',
+          slot: 'customerName',
+          resizable: true,
+          width: 100,
+          sortable: 'user_id'
         },
         {
           title: '备注',
@@ -136,7 +157,7 @@ export default {
           key: 'date',
           resizable: true,
           width: 180,
-          sortable: 'custom'
+          sortable: 'date'
         },
         {
           title: '操作',
@@ -161,10 +182,19 @@ export default {
       title: '',
       okText: '',
       type: '',
+      diseaseList: [],
+      wechatList: [],
+      provinces: [],
+      citys: [],
+      communitys: [],
+      provincesMap: [],
+      citysMap: [],
+      communitysMap: [],
+      hasCommunity: true,
       formValidate: {
         name: '',
         age: '',
-        username: '',
+        customer_wechat: '',
         address: '',
         disease: '',
         wechat: '',
@@ -204,38 +234,100 @@ export default {
       this.cards = await index({ limit: this.pageSize, currentPage: this.pageIndex, sort: this.sort, user_id: userId })
       this.total = this.cards.count
     },
-    add() {
+    async loadDiseaseList() {
+      this.diseaseList = await list()
+    },
+    async loadWechatList(id) {
+      if (id) {
+        this.wechatList = await wechatIndex({ userId: id })
+      } else {
+        this.wechatList = await wechatIndex({})
+      }
+    },
+    async loadCityData(id) {
+      // const province = await loadCity()
+      const query = {
+        key: 'ZBABZ-SNM3R-SP4WE-WWDUX-6H4UH-PSBT7',
+        output: 'jsonp'
+      }
+      if (id) {
+        query.id = id
+      }
+      return await this.$jsonp('http://apis.map.qq.com/ws/district/v1/getchildren', query).then(json => {
+        return json.result[0]
+      })
+    },
+    async provinceChange(id) {
+      this.citys = await this.loadCityData(id)
+      this.citysMap = this.citys
+    },
+    async cityChange(id) {
+      if (id == null) {
+        return
+      }
+      if (id.length > 6) {
+        this.hasCommunity = false
+        this.communitys = []
+        this.communitysMap = []
+      } else {
+        this.communitys = await this.loadCityData(id)
+        this.communitysMap = this.communitys
+      }
+    },
+
+    loadCity() {},
+    async add() {
+      this.loadDiseaseList()
+      this.loadWechatList(this.$store.state.user.userId)
+      this.provinces = await this.loadCityData()
+      this.provincesMap = this.provinces
       this.modal1 = true
       this.type = 'add'
       this.title = '新 增'
       this.okText = '保 存'
       this.formValidate.name = ''
       this.formValidate.age = ''
-      this.formValidate.username = ''
+      this.formValidate.customer_wechat = ''
       this.formValidate.address = ''
+      this.formValidate.province = ''
+      this.formValidate.city = ''
+      this.formValidate.community = ''
       this.formValidate.disease = ''
       this.formValidate.wechat = ''
       this.formValidate.remark = ''
       this.formValidate.date = new Date()
       this.formValidate.user_id = this.$store.state.user.userId
     },
-    edit(id) {
+    async edit(id) {
       this.type = 'edit'
       this.title = '更 新'
       this.okText = '保 存'
       this.modal1 = true
+      this.loadDiseaseList()
+      this.provinces = await this.loadCityData()
+      this.provincesMap = this.provinces
       //
-      show(id).then(response => {
+      const vm = this
+      show(id).then(async response => {
         this.formValidate.id = response.id
         this.formValidate.name = response.name
         this.formValidate.age = response.age
-        this.formValidate.username = response.username
         this.formValidate.address = response.address
         this.formValidate.disease = response.disease
         this.formValidate.wechat = response.wechat
         this.formValidate.remark = response.remark
         this.formValidate.date = response.date
         this.formValidate.user_id = response.user_id
+        const addressArray = response.address.split('/')
+        if (addressArray) {
+          this.formValidate.province = await this.getMapId(this.provincesMap, addressArray[0])
+          await this.provinceChange(this.formValidate.province)
+          this.formValidate.city = await this.getMapId(this.citysMap, addressArray[1])
+          await this.cityChange(this.formValidate.city)
+          this.formValidate.community = vm.getMapId(vm.communitysMap, addressArray[2])
+        }
+        await this.loadWechatList(response.user_id)
+        this.formValidate.customer_wechat = response.customer_wechat
       })
     },
     comfirmDel() {
@@ -253,9 +345,34 @@ export default {
       this.modal2 = true
       this.currentDeleteId = id
     },
+    getMapValue(list, id) {
+      const item = list.find(k => {
+        return k.id === id
+      })
+      if (item) {
+        return item.fullname
+      } else {
+        return ''
+      }
+    },
+    getMapId(list, fullname) {
+      const item = list.find(k => {
+        return k.fullname === fullname
+      })
+      if (item) {
+        return item.id
+      } else {
+        return ''
+      }
+    },
     ok(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
+          this.formValidate.address = [
+            this.getMapValue(this.provincesMap, this.formValidate.province),
+            this.getMapValue(this.citysMap, this.formValidate.city),
+            this.getMapValue(this.communitysMap, this.formValidate.community)
+          ].join('/')
           if (this.type === 'add') {
             create(this.formValidate).then(response => {
               if (response) {

@@ -8,7 +8,7 @@ export default {
   baseUrl: {
     // dev: 'http://localhost:7300/mock/5dd6984f5da8a70020b9322a/creditCard/',
     // dev: 'http://' + window.location.hostname + ':7001/',
-    dev: 'http://114.215.82.206:7001/',
+    dev: 'http://localhost:7001/',
     pro: 'http://114.215.82.206:7001/'
   },
   /**

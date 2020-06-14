@@ -27,7 +27,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: ['@/plugins/iview', '@/plugins/sysconfig', '@/plugins/filters.js'],
+  plugins: ['@/plugins/iview', '@/plugins/sysconfig', '@/plugins/filters.js', '@/plugins/vuejsonp.js'],
   // plugins: [{ src: '@/plugins/iview', ssr: true }, '@/plugins/sysconfig'],
   /*
    ** Nuxt.js modules
