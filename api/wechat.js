@@ -15,20 +15,20 @@ export const index = options => {
 
 export const show = id => {
   return request({
-    url: 'disease/' + id,
+    url: 'wechat/' + id,
     method: 'get'
   })
 }
 export const list = () => {
   return request({
-    url: 'diseaseList/',
+    url: 'wechatList/',
     method: 'get'
   })
 }
 
 export const create = options => {
   return request({
-    url: 'disease',
+    url: 'wechat',
     method: 'POST',
     data: options
   })
@@ -36,7 +36,7 @@ export const create = options => {
 
 export const update = (id, options) => {
   return request({
-    url: 'disease/' + id,
+    url: 'wechat/' + id,
     method: 'PUT',
     data: options
   })
@@ -44,7 +44,7 @@ export const update = (id, options) => {
 
 export const destroy = id => {
   return request({
-    url: 'disease/' + id,
+    url: 'wechat/' + id,
     method: 'DELETE'
   })
 }

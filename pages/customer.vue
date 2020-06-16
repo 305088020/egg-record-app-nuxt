@@ -54,18 +54,24 @@
           </Select>
         </FormItem>
         <FormItem label="患者微信" prop="wechat">
-          <Input v-model="formValidate.wechat" placeholder="患者微信"></Input>
+          <Input v-model="formValidate.wechat" placeholder="患者微信"> </Input>
         </FormItem>
         <FormItem label="疾病" prop="disease">
-          <!-- <Input v-model="formValidate.disease" placeholder="疾病"></Input> -->
           <Select v-model="formValidate.disease" style="width:200px">
-            <Option v-for="item in diseaseList" :value="item.type" :key="item.type">{{ item.type }}</Option>
+            <Option v-for="item in diseaseList" :value="item.type" :key="item.id">{{ item.type }}</Option>
           </Select>
         </FormItem>
         <FormItem label="客服微信" prop="customer_wechat">
           <Select v-model="formValidate.customer_wechat" style="width:200px">
-            <Option v-for="item in wechatList" :value="item.wechat" :key="item.wechat">{{ item.wechat }}</Option>
+            <Option v-for="item in wechatList" :value="item.wechat" :key="item.id">{{ item.wechat }}</Option>
           </Select>
+          <Button
+            v-if="this.formValidate.user_id === this.$store.state.user.userId"
+            icon="ios-add"
+            shape="circle"
+            type="primary"
+            @click="addWechat"
+          ></Button>
         </FormItem>
         <FormItem label="时间" prop="date">
           <DatePicker type="datetime" v-model="formValidate.date" placeholder="Select date" style="width: 200px"></DatePicker>
@@ -79,13 +85,27 @@
         <Button type="primary" @click="ok('formValidate')">确定</Button>
       </div>
     </Modal>
+    <Modal v-model="wechatModel" title="添加微信" footer-hide>
+      <Input v-model="newWechat">
+        <Button slot="append" icon="ios-add" @click="addNewWechat"></Button>
+      </Input>
+      <br />
+      <List border>
+        <ListItem v-for="item in wechatList" :key="item.wechat"
+          >{{ item.wechat }}
+          <template slot="action">
+            <Button type="error" ghost shape="circle" icon="ios-trash" @click="deleteWechat(item)"></Button>
+          </template>
+        </ListItem>
+      </List>
+    </Modal>
   </div>
 </template>
 
 <script>
 import { index, create, update, show, destroy } from '@/api/customer'
 import { list } from '@/api/disease'
-import { index as wechatIndex } from '@/api/wechat'
+import { index as wechatIndex, create as addWechat, destroy as deleteWechat } from '@/api/wechat'
 export default {
   async asyncData({ $axios, store }) {
     console.log(store.state.user.role)
@@ -191,6 +211,9 @@ export default {
       citysMap: [],
       communitysMap: [],
       hasCommunity: true,
+      wechatModel: false,
+      newWechat: '',
+      addButtonFlag: true,
       formValidate: {
         name: '',
         age: '',
@@ -297,6 +320,7 @@ export default {
       this.formValidate.remark = ''
       this.formValidate.date = new Date()
       this.formValidate.user_id = this.$store.state.user.userId
+      this.addButtonFlag = true
     },
     async edit(id) {
       this.type = 'edit'
@@ -318,6 +342,9 @@ export default {
         this.formValidate.remark = response.remark
         this.formValidate.date = response.date
         this.formValidate.user_id = response.user_id
+        if (response.user_id !== this.$store.state.user.userId) {
+          this.addButtonFlag = false
+        }
         const addressArray = response.address.split('/')
         if (addressArray) {
           this.formValidate.province = await this.getMapId(this.provincesMap, addressArray[0])
@@ -395,6 +422,33 @@ export default {
       console.log(this.$store.state.user.token)
       this.modal1 = false
       this.$refs.formValidate.resetFields()
+    },
+    addWechat() {
+      this.wechatModel = true
+    },
+    addNewWechat() {
+      // 新增微信
+      if (this.newWechat == null || this.newWechat === '') {
+        this.$Message.info('填写微信号')
+        return
+      }
+      const newWechat = {
+        wechat: this.newWechat,
+        user_id: this.$store.state.user.userId
+      }
+      addWechat(newWechat).then(response => {
+        if (response) {
+          this.newWechat = ''
+          this.loadWechatList(this.$store.state.user.userId)
+        }
+      })
+    },
+    deleteWechat(wechat) {
+      deleteWechat(wechat.id).then(response => {
+        if (response) {
+          this.loadWechatList(this.$store.state.user.userId)
+        }
+      })
     }
   }
 }
