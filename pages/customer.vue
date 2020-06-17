@@ -459,9 +459,11 @@ export default {
             )
           } else if (this.type === 'edit') {
             update(this.formValidate.id, this.formValidate).then(response => {
-              this.loadData()
-              this.$Message.success('更新成功!')
-              this.modal1 = false
+              if (response) {
+                this.loadData()
+                this.$Message.success('更新成功!')
+                this.modal1 = false
+              }
             })
           }
         }
