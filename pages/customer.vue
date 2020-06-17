@@ -165,7 +165,7 @@ export default {
           key: 'disease',
           resizable: true,
           width: 120,
-          sortable: 'disease'
+          sortable: true
         },
         {
           title: '患者微信',
@@ -178,21 +178,22 @@ export default {
           key: 'customer_wechat',
           resizable: true,
           width: 120,
-          sortable: 'customer_wechat'
+          sortable: true
         },
         {
           title: '客服姓名',
+          key: 'user_id',
           slot: 'customerName',
           resizable: true,
           width: 120,
-          sortable: 'user_id'
+          sortable: true
         },
         {
           title: '成交',
           key: 'deal',
           resizable: true,
           width: 100,
-          sortable: 'deal'
+          sortable: true
         },
         {
           title: '备注',
@@ -200,10 +201,11 @@ export default {
         },
         {
           title: '登记时间',
+          key: 'date',
           slot: 'datesolt',
           resizable: true,
           width: 120,
-          sortable: 'date'
+          sortable: true
         },
 
         {
@@ -434,11 +436,21 @@ export default {
     ok(name) {
       this.$refs[name].validate(valid => {
         if (valid) {
-          this.formValidate.address = [
-            this.getMapValue(this.provincesMap, this.formValidate.province),
-            this.getMapValue(this.citysMap, this.formValidate.city),
-            this.getMapValue(this.communitysMap, this.formValidate.community)
-          ].join('/')
+          const addressArray = []
+          const provincesItem = this.getMapValue(this.provincesMap, this.formValidate.province)
+          const cityItem = this.getMapValue(this.citysMap, this.formValidate.city)
+          const communitysItem = this.getMapValue(this.communitysMap, this.formValidate.community)
+          if (provincesItem && provincesItem !== '') {
+            addressArray.push(provincesItem)
+          }
+          if (cityItem && cityItem !== '') {
+            addressArray.push(cityItem)
+          }
+          if (communitysItem && communitysItem !== '') {
+            addressArray.push(communitysItem)
+          }
+          this.formValidate.address = addressArray.join('/')
+
           console.log(this.formValidate.disease)
           if (this.formValidate.diseaseArray && this.formValidate.diseaseArray.length > 0) {
             this.formValidate.disease = this.formValidate.diseaseArray.join(',')
