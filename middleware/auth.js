@@ -39,6 +39,6 @@ export default async function({ store, route, redirect, error }) {
   }
 
   if (path === '/') {
-    return redirect('/home')
+    return redirect('/customer')
   }
 }
