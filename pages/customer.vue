@@ -196,8 +196,7 @@ export default {
         },
         {
           title: '备注',
-          key: 'remark',
-          width: 200
+          key: 'remark'
         },
         {
           title: '登记时间',
