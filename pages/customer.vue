@@ -21,7 +21,7 @@
           {{ row.user.name }}
         </template>
         <template slot-scope="{ row }" slot="datesolt">
-          {{ row.date | dateformat('YYYY/MM/DD') }}
+          {{ row.date }}
         </template>
         <template slot-scope="{ row }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row.id)">编辑</Button>
