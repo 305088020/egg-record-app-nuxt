@@ -1,20 +1,10 @@
 import request from '../libs/request'
 
 export const index = options => {
-  const url =
-    'customer?limit=' +
-    options.limit +
-    '&currentPage=' +
-    options.currentPage +
-    '&sort=' +
-    options.sort +
-    '&user_id=' +
-    options.user_id +
-    '&search=' +
-    options.search
   return request({
-    url: url,
-    method: 'get'
+    url: 'customer',
+    method: 'get',
+    params: options
   })
 }
 

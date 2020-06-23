@@ -10,7 +10,31 @@
       </a>
       <Form ref="formInline" inline>
         <FormItem prop="user">
-          <Input type="text" v-model="searchText" placeholder="患者姓名/微信"> </Input>
+          <Input type="text" v-model="searchCustomer" placeholder="患者姓名/微信"> </Input>
+        </FormItem>
+        <FormItem>
+          <Select v-model="searchDisease" clearable style="width:200px" placeholder="疾病类型">
+            <Option v-for="item in diseaseList" :value="item.type" :key="item.id">{{ item.type }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem v-if="this.$store.state.user.role == 'admin'">
+          <Select v-model="searchUserName" clearable style="width:200px" placeholder="客服姓名" @on-change="searchUserNameChange">
+            <Option v-for="item in searchUserNameList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem>
+          <Select v-model="searchUserWechat" clearable style="width:200px" placeholder="客服微信">
+            <Option v-for="item in searchUserWechatList" :value="item.wechat" :key="item.id">{{ item.wechat }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem>
+          <Select v-model="searchDeal" style="width:150px" clearable placeholder="成交/未成交">
+            <Option value="成交" key="成交">成交</Option>
+            <Option value="未成交" key="未成交">未成交</Option>
+          </Select>
+        </FormItem>
+        <FormItem>
+          <Input type="text" v-model="searchRemark" placeholder="备注"> </Input>
         </FormItem>
         <FormItem>
           <Button type="primary" @click="handleSubmit()">搜索</Button>
@@ -18,7 +42,7 @@
       </Form>
       <Table border stripe :columns="columns8" :data="cards.data" @on-sort-change="sortChange($event)">
         <template slot-scope="{ row }" slot="customerName">
-          {{ row.user.name }}
+          {{ row.user && row.user.name }}
         </template>
         <template slot-scope="{ row }" slot="datesolt">
           {{ row.date }}
@@ -123,16 +147,27 @@
 <script>
 import { index, create, update, show, destroy } from '@/api/customer'
 import { list } from '@/api/disease'
+import { list as userList } from '@/api/creditCard/users'
 import { index as wechatIndex, create as addWechat, destroy as deleteWechat } from '@/api/wechat'
 export default {
   async asyncData({ $axios, store }) {
     console.log(store.state.user.role)
     let userId
+    let searchUserWechatList
     if (store.state.user.role !== 'admin') {
       userId = store.state.user.userId
+      searchUserWechatList = await wechatIndex({ userId: userId })
+    } else {
+      searchUserWechatList = await wechatIndex({})
     }
     const cards = await index({ limit: 10, currentPage: 1, sort: 'id,desc', user_id: userId })
+    const diseaseList = await list()
+    const searchUserNameList = await userList()
+
     return {
+      diseaseList,
+      searchUserNameList,
+      searchUserWechatList,
       cards,
       total: cards.count,
       columns8: [
@@ -231,7 +266,6 @@ export default {
       title: '',
       okText: '',
       type: '',
-      diseaseList: [],
       wechatList: [],
       provinces: [],
       citys: [],
@@ -243,7 +277,12 @@ export default {
       wechatModel: false,
       newWechat: '',
       addButtonFlag: true,
-      searchText: '',
+      searchCustomer: null,
+      searchDisease: null,
+      searchUserName: null,
+      searchUserWechat: null,
+      searchDeal: null,
+      searchRemark: null,
       formValidate: {
         name: '',
         age: '',
@@ -282,14 +321,29 @@ export default {
       await this.loadData()
     },
     async loadData() {
-      let userId
+      const query = { limit: this.pageSize, currentPage: this.pageIndex, sort: this.sort }
       if (this.$store.state.user.role !== 'admin') {
-        userId = this.$store.state.user.userId
+        query.user_id = this.$store.state.user.userId
       }
-      const query = { limit: this.pageSize, currentPage: this.pageIndex, sort: this.sort, user_id: userId }
-      if (this.searchText != null && this.searchText !== '') {
-        query.search = this.searchText
+      if (this.searchCustomer != null && this.searchCustomer.trim() !== '') {
+        query.searchCustomer = this.searchCustomer
       }
+      if (this.searchDisease != null && this.searchDisease.trim() !== '') {
+        query.searchDisease = this.searchDisease
+      }
+      if (this.searchUserName != null) {
+        query.searchUserName = this.searchUserName
+      }
+      if (this.searchUserWechat != null && this.searchUserWechat.trim() !== '') {
+        query.searchUserWechat = this.searchUserWechat
+      }
+      if (this.searchDeal != null && this.searchDeal.trim() !== '') {
+        query.searchDeal = this.searchDeal
+      }
+      if (this.searchRemark != null && this.searchRemark.trim() !== '') {
+        query.searchRemark = this.searchRemark
+      }
+
       this.cards = await index(query)
       this.total = this.cards.count
     },
@@ -514,6 +568,10 @@ export default {
     },
     handleSubmit() {
       this.loadData()
+    },
+    async searchUserNameChange(value) {
+      this.searchUserWechat = ''
+      this.searchUserWechatList = await wechatIndex({ userId: value })
     }
   }
 }

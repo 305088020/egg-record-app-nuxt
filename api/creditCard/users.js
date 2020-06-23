@@ -8,6 +8,13 @@ export const index = options => {
   })
 }
 
+export const list = () => {
+  return request({
+    url: 'usersList/',
+    method: 'get'
+  })
+}
+
 export const show = id => {
   return request({
     url: 'users/' + id,
