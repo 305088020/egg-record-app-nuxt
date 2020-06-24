@@ -7,6 +7,14 @@ export const index = options => {
     params: options
   })
 }
+export const exportExcel = options => {
+  return request({
+    url: '/export',
+    method: 'get',
+    responseType: 'blob',
+    params: options
+  })
+}
 
 export const show = id => {
   return request({

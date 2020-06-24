@@ -5,8 +5,9 @@
         <Icon type="ios-people" />
         客户信息
       </p>
-      <a href="#" slot="extra" @click.prevent="add">
-        <Button type="primary" icon="md-add">新增</Button>
+      <a href="#" slot="extra">
+        <Button type="primary" icon="md-add" @click="add()">新增</Button>
+        <Button type="info" icon="md-download" @click="exportExcel()">导出</Button>
       </a>
       <Form ref="formInline" inline>
         <FormItem prop="user">
@@ -145,7 +146,7 @@
 </template>
 
 <script>
-import { index, create, update, show, destroy } from '@/api/customer'
+import { index, create, update, show, destroy, exportExcel } from '@/api/customer'
 import { list } from '@/api/disease'
 import { list as userList } from '@/api/creditCard/users'
 import { index as wechatIndex, create as addWechat, destroy as deleteWechat } from '@/api/wechat'
@@ -321,6 +322,11 @@ export default {
       await this.loadData()
     },
     async loadData() {
+      const query = this.setQuery()
+      this.cards = await index(query)
+      this.total = this.cards.count
+    },
+    setQuery() {
       const query = { limit: this.pageSize, currentPage: this.pageIndex, sort: this.sort }
       if (this.$store.state.user.role !== 'admin') {
         query.user_id = this.$store.state.user.userId
@@ -343,9 +349,7 @@ export default {
       if (this.searchRemark != null && this.searchRemark.trim() !== '') {
         query.searchRemark = this.searchRemark
       }
-
-      this.cards = await index(query)
-      this.total = this.cards.count
+      return query
     },
     async loadDiseaseList() {
       this.diseaseList = await list()
@@ -572,6 +576,46 @@ export default {
     async searchUserNameChange(value) {
       this.searchUserWechat = ''
       this.searchUserWechatList = await wechatIndex({ userId: value })
+    },
+    exportExcel() {
+      const query = this.setQuery()
+      const self = this
+      const fileName = '导出信息表.xlsx'
+      this.$Loading.start()
+      exportExcel(query)
+        .then(res => {
+          if (res) {
+            const blob = new Blob([res])
+            if ('download' in document.createElement('a')) {
+              // 创建a标签
+              const link = document.createElement('a')
+              // a标签添加属性
+              link.download = fileName
+              link.style.display = 'none'
+              link.href = URL.createObjectURL(blob)
+              document.body.appendChild(link)
+              // 执行下载
+              link.click()
+              // 释放url
+              URL.revokeObjectURL(link.href)
+              // 释放标签
+              document.body.removeChild(link)
+              self.$Message.success('导出成功！')
+              this.$Loading.finish()
+            } else {
+              navigator.msSaveBlob(blob, fileName)
+              this.$Loading.finish()
+            }
+          } else {
+            self.$Message.warning('转化Excel文件失败，请检查文件并且重试！')
+            this.$Loading.finish()
+          }
+        })
+        .catch(() => {
+          // err
+          this.$Message.error('导出失败！')
+          this.$Loading.finish()
+        })
     }
   }
 }
