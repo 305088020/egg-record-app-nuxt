@@ -48,6 +48,9 @@
         <template slot-scope="{ row }" slot="datesolt">
           {{ row.date }}
         </template>
+        <template slot-scope="{ row }" slot="wechatdatesolt">
+          {{ row.add_wechat_date }}
+        </template>
         <template slot-scope="{ row }" slot="action">
           <Button type="primary" size="small" style="margin-right: 5px" @click="edit(row.id)">编辑</Button>
           <Button type="error" size="small" @click="remove(row.id)">删除</Button>
@@ -71,7 +74,7 @@
       </div>
     </Modal>
     <Modal v-model="modal1" width="800" :title="title" :okText="okText" :mask-closable="false" @on-cancel="cancel">
-      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80" inline>
+      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="100" inline>
         <FormItem label="患者姓名" prop="name">
           <Input v-model="formValidate.name" placeholder="患者姓名" style="width:200px"></Input>
         </FormItem>
@@ -109,6 +112,9 @@
             type="primary"
             @click="addWechat"
           ></Button>
+        </FormItem>
+        <FormItem label="添加微信时间" prop="date">
+          <DatePicker type="datetime" v-model="formValidate.add_wechat_date" placeholder="Select date" style="width: 200px"></DatePicker>
         </FormItem>
         <FormItem label="成交" prop="deal">
           <Select v-model="formValidate.deal" style="width:200px">
@@ -180,8 +186,7 @@ export default {
           title: '患者姓名',
           key: 'name',
           resizable: true,
-          width: 100,
-          fixed: 'left'
+          width: 100
         },
         {
           title: '年龄',
@@ -200,20 +205,28 @@ export default {
           title: '疾病类型',
           key: 'disease',
           resizable: true,
-          width: 120,
+          width: 200,
           sortable: true
         },
         {
           title: '患者微信',
           key: 'wechat',
           resizable: true,
-          width: 100
+          width: 200
         },
         {
           title: '客服微信',
           key: 'customer_wechat',
           resizable: true,
           width: 120,
+          sortable: true
+        },
+        {
+          title: '添加微信时间',
+          key: 'add_wechat_date',
+          slot: 'wechatdatesolt',
+          resizable: true,
+          width: 170,
           sortable: true
         },
         {
@@ -233,17 +246,18 @@ export default {
         },
         {
           title: '备注',
-          key: 'remark'
+          key: 'remark',
+          resizable: true,
+          width: 400
         },
         {
           title: '登记时间',
           key: 'date',
           slot: 'datesolt',
           resizable: true,
-          width: 120,
+          width: 170,
           sortable: true
         },
-
         {
           title: '操作',
           slot: 'action',
@@ -295,6 +309,7 @@ export default {
         deal: '',
         remark: '',
         date: '',
+        add_wechat_date: null,
         user_id: ''
       },
       ruleValidate: {
@@ -415,6 +430,7 @@ export default {
       this.formValidate.deal = ''
       this.formValidate.remark = ''
       this.formValidate.date = new Date()
+      this.formValidate.add_wechat_date = null
       this.formValidate.user_id = this.$store.state.user.userId
       this.addButtonFlag = true
     },
@@ -440,6 +456,7 @@ export default {
         this.formValidate.deal = response.deal
         this.formValidate.remark = response.remark
         this.formValidate.date = response.date
+        this.formValidate.add_wechat_date = response.add_wechat_date
         this.formValidate.user_id = response.user_id
         if (response.user_id !== this.$store.state.user.userId) {
           this.addButtonFlag = false
@@ -509,9 +526,14 @@ export default {
           }
           this.formValidate.address = addressArray.join('/')
 
-          console.log(this.formValidate.disease)
           if (this.formValidate.diseaseArray && this.formValidate.diseaseArray.length > 0) {
             this.formValidate.disease = this.formValidate.diseaseArray.join(',')
+          }
+          if (this.formValidate.add_wechat_date === '') {
+            this.formValidate.add_wechat_date = null
+          }
+          if (this.formValidate.age === 0 || this.formValidate.age === '') {
+            this.formValidate.age = null
           }
           if (this.type === 'add') {
             create(this.formValidate).then(
